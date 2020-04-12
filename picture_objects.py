@@ -13,7 +13,7 @@ import random
 image_size = 320
 
 #one function to generate the objects
-def create_shape(percentage, shape_type, color = 'white'):
+def create_shape(percentage, shape_type, color = 'white', rotate = False):
     if shape_type == 'circle':
         shape_size = int(image_size*percentage)
         shape = Image.new('RGBA',(shape_size, shape_size), (0, 0, 0, 0))
@@ -25,12 +25,18 @@ def create_shape(percentage, shape_type, color = 'white'):
         shape = Image.new('RGBA',(int(shape_size/3), shape_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(shape)
         draw.rectangle([(0, 0),(int(shape_size/3), shape_size)], fill=color)
+        if rotate:
+            degree = random.randint(0,360)
+            shape = shape.rotate(degree, expand=True)
         return shape, shape_type
     elif shape_type == 'triangle':
         shape_size = int(image_size*percentage)
         shape = Image.new('RGBA',(shape_size, shape_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(shape)
         draw.polygon([(int(shape_size/2), 0),(0, shape_size),(shape_size, shape_size)], fill=color)
+        if rotate:
+            degree = random.randint(0,360)
+            shape = shape.rotate(degree, expand=True)
         return shape, shape_type
     else:
         raise Exception('not a valid shape type-choose between circle, rectangle, triangle')
@@ -71,11 +77,14 @@ def combine_sb(shape, background, rotate_degree = 0):
     bottom_right = (loc[0]+width, loc[1]+height)
     bounding_box = (top_left, bottom_right, width, height)
     annotation = (bounding_box, shape[1])
+    #background.show()
+    #draw = ImageDraw.Draw(background)
+    #draw.rectangle([bounding_box[0], bounding_box[1]], fill=(255, 255, 255, 100))
     return background, annotation
 
 
 #testing to see if stuff works
-shape = create_shape(0.33, 'rectangle', color='purple')
+shape = create_shape(0.33, 'rectangle', color='purple', rotate=False)
 shape_size = shape[0].size
 background = create_background()
 test = combine_sb(shape, background)
