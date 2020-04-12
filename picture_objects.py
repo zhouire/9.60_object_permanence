@@ -9,6 +9,7 @@
 
 #yolo takes square images from 320 to 608, with a step of 32
 from PIL import Image, ImageDraw, ImageFilter
+import random
 image_size = 320
 
 #one function to generate the objects
@@ -60,7 +61,9 @@ def create_occlusion(orientation, shape_size, color = 'black'):
 def combine_sb(shape, background, rotate_degree = 0):
     bs = background.size
     ss = shape[0].size
-    loc = (int(bs[0]/2)-int(ss[0]/2),int(bs[1]/2)-int(ss[1]/2))
+    rand_x = random.randint(0,bs[0]-ss[0]-1)
+    rand_y = random.randint(0,bs[1]-ss[1]-1)
+    loc = (rand_x,rand_y)
     background.paste(shape[0], loc, shape[0])
     height = ss[1]
     width = ss[0]
