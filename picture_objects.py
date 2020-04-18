@@ -22,9 +22,9 @@ def create_shape(percentage, shape_type, color = 'white', rotate = False):
         return shape, shape_type
     elif shape_type == 'square':
         shape_size = int(image_size*percentage)
-        shape = Image.new('RGBA',(int(shape_size), shape_size), (0, 0, 0, 0))
+        shape = Image.new('RGBA',(shape_size, shape_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(shape)
-        draw.rectangle([(0, 0),(int(shape_size), shape_size)], fill=color)
+        draw.rectangle([(0, 0),(shape_size, shape_size)], fill=color)
         if rotate:
             degree = random.randint(0,360)
             shape = shape.rotate(degree, expand=True)
@@ -47,17 +47,17 @@ def create_background(color = 'gray'):
     return background
     
 #one function to generate the occlusions
-def create_occlusion(orientation, shape_size, percentage, color = 'black'):
+def create_occlusion(orientation, image_size, percentage, color = 'black'):
     if orientation=='horizontal':
-        occ = Image.new('RGBA',(shape_size, int(shape_size*percentage)), (0, 0, 0, 0))
+        occ = Image.new('RGBA',(image_size, int(image_size*percentage)), (0, 0, 0, 0))
         draw = ImageDraw.Draw(occ)
-        draw.rectangle([(0, 0),(shape_size, int(shape_size/3))], fill=color)
+        draw.rectangle([(0, 0),(image_size, int(image_size*percentage))], fill=color)
         return occ
     
-    elif  orientation=='vertical':
-        occ = Image.new('RGBA',(int(shape_size*percentage), shape_size), (0, 0, 0, 0))
+    elif orientation=='vertical':
+        occ = Image.new('RGBA',(int(image_size*percentage), image_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(occ)
-        draw.rectangle([(int(shape_size/3), shape_size), (0, 0)], fill=color)
+        draw.rectangle([(0, 0), (int(image_size*percentage), image_size)], fill=color)
         return occ
     else:
         raise Exception('not a valid shape type-choose between horizontal or vertical')
