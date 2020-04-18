@@ -20,11 +20,11 @@ def create_shape(percentage, shape_type, color = 'white', rotate = False):
         draw = ImageDraw.Draw(shape)
         draw.ellipse([(0, 0),(shape_size, shape_size)], fill=color)
         return shape, shape_type
-    elif shape_type == 'rectangle':
+    elif shape_type == 'square':
         shape_size = int(image_size*percentage)
-        shape = Image.new('RGBA',(int(shape_size/3), shape_size), (0, 0, 0, 0))
+        shape = Image.new('RGBA',(int(shape_size), shape_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(shape)
-        draw.rectangle([(0, 0),(int(shape_size/3), shape_size)], fill=color)
+        draw.rectangle([(0, 0),(int(shape_size), shape_size)], fill=color)
         if rotate:
             degree = random.randint(0,360)
             shape = shape.rotate(degree, expand=True)
@@ -47,15 +47,15 @@ def create_background(color = 'gray'):
     return background
     
 #one function to generate the occlusions
-def create_occlusion(orientation, shape_size, color = 'black'):
+def create_occlusion(orientation, shape_size, percentage, color = 'black'):
     if orientation=='horizontal':
-        occ = Image.new('RGBA',(shape_size, int(shape_size/3), ), (0, 0, 0, 0))
+        occ = Image.new('RGBA',(shape_size, int(shape_size*percentage)), (0, 0, 0, 0))
         draw = ImageDraw.Draw(occ)
         draw.rectangle([(0, 0),(shape_size, int(shape_size/3))], fill=color)
         return occ
     
     elif  orientation=='vertical':
-        occ = Image.new('RGBA',(int(shape_size/3), shape_size), (0, 0, 0, 0))
+        occ = Image.new('RGBA',(int(shape_size*percentage), shape_size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(occ)
         draw.rectangle([(int(shape_size/3), shape_size), (0, 0)], fill=color)
         return occ
@@ -64,6 +64,7 @@ def create_occlusion(orientation, shape_size, color = 'black'):
 
 
 #one function to combine images together (for stationary objects)
+# place shape on background in a random location
 def combine_sb(shape, background, rotate_degree = 0):
     bs = background.size
     ss = shape[0].size
@@ -83,6 +84,7 @@ def combine_sb(shape, background, rotate_degree = 0):
     return background, annotation
 
 
+'''
 #testing to see if stuff works
 shape = create_shape(0.33, 'rectangle', color='purple', rotate=False)
 shape_size = shape[0].size
@@ -90,3 +92,4 @@ background = create_background()
 test = combine_sb(shape, background)
 test[0].show()
 print(test[1])
+'''
