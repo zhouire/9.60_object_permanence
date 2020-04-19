@@ -221,14 +221,12 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
     return dataset
 
 
-
-
-
+'''
 # testing code
 image_size = 320
 num_frames = 5
 
-'''
+
 # manual entry shape and occlusion
 shape1 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
 occlusion1 = picture_objects.create_occlusion("vertical", image_size, 0.20)
@@ -244,9 +242,9 @@ video = compile_video(shape1, occlusion1, background1, (100, 200), 'right', imag
 
 for i in video[0]:
     i.show()
-'''
 
-'''
+
+
 # testing randomized dataset generation
 data = generate_dataset(4, (0.1, 0.25), (0.15, 0.33), 0.5, 10)
 
