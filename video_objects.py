@@ -3,12 +3,14 @@ import random
 import numpy as np
 
 # output combined image with shape, background, occlusion
-# shape_info = (shape object, shape name, location)
+# shape_info = (shape object, shape location, shape name)
 # occlusion_info = (occlusion, location)
 def combine_image(shape_info, occlusion_info, background):
     ss = shape_info[0].size
     shape_loc = shape_info[1]
     occ_loc = occlusion_info[1]
+
+    print(shape_loc, occ_loc)
 
     background.paste(shape_info[0], shape_loc, shape_info[0])
     background.paste(occlusion_info[0], occ_loc, occlusion_info[0])
@@ -36,7 +38,7 @@ def combine_image(shape_info, occlusion_info, background):
 #   num_frames = number of frames
 def compile_video(shape_info, occlusion, background, shape_move, occlusion_move, image_size, num_frames):
     # create list of locations if the occlusion is moving
-    if type(occlusion_move == str):
+    if type(occlusion_move) == str:
         shape_locs = [shape_move for f in range(num_frames)]
 
         if occlusion_move == 'up' or occlusion_move == 'down':
@@ -53,7 +55,8 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
         occ_locs = [occlusion_move for f in range(num_frames)]
 
         [start_x, start_y], [end_x, end_y] = shape_move
-        shape_locs = [((end_x - start_x)//(num_frames-1)*f, (end_y - start_y)//(num_frames-1)*f) for f in range(num_frames)]
+        shape_locs = [((end_x - start_x)//(num_frames-1)*f + start_x, (end_y - start_y)//(num_frames-1)*f + start_y)
+                      for f in range(num_frames)]
 
     # list of images making up the "video":
     video = []
@@ -65,7 +68,7 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
         # retain original background after pasting
         background_copy = background.copy()
 
-        img, annot = combine_image((shape_info[0], shape_info[1], shape_locs[i]),
+        img, annot = combine_image((shape_info[0], shape_locs[i], shape_info[1]),
                                    (occlusion, occ_locs[i]),
                                    background_copy)
 
@@ -74,11 +77,6 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
 
     return np.array([video, annots])
 
-
-
-
-
-    return 0
 
 
 # generates a full dataset of videos with uniform distribution of different shapes, occlusions, and movement patterns
@@ -219,7 +217,14 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
 
 
+# testing code
+image_size = 320
+num_frames = 15
+shape = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
+occlusion = picture_objects.create_occlusion("vertical", image_size, 0.20)
+background = picture_objects.create_background()
 
+video = compile_video(shape, occlusion, background, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
 
-
-
+for i in video[0]:
+    i.show()
