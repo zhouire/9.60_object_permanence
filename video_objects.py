@@ -103,7 +103,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
     #TODO: IMPLEMENT SOME SORT OF SAVE FUNCTION INSTEAD OF JUST RETURNING A LIST OF OBJECTS
     dataset = []
 
-    for i in num_videos:
+    for i in range(num_videos):
         shape_type = random.choice(shapes)
         occlusion_type = random.choice(occlusions)
         moving_obj = random.choice(movements)
@@ -120,6 +120,9 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
         occlusion = picture_objects.create_occlusion(occlusion_type, image_size, occlusion_size)
         background = picture_objects.create_background()
 
+        shape_size = int(image_size*shape_size)
+        occlusion_size = int(image_size*occlusion_size)
+
         mcoord = image_size - shape_size - 1
 
         if moving_obj == "occlusion":
@@ -130,7 +133,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
                 # to ensure a full occlusion if it is possible, place shape fully obscured by one of the occlusion positions
                 # occlusion will sweep from one side to another, starting and ending fully off the image
-                shape_loc = [0, random.uniform(0, mcoord)]
+                shape_loc = [0, random.randint(0, mcoord)]
                 if occlusion_size > shape_size:
                     shape_loc[0] = int((image_size//(num_frames-1))*random.randint(num_frames//2, num_frames-2) -
                                        occlusion_size//2 +
@@ -146,9 +149,13 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                 if mov_dir == 2:
                     occlusion_move = random.choice(['up', 'down'])
 
-                shape_loc = [random.uniform(0, mcoord), 0]
+                shape_loc = [random.randint(0, mcoord), 0]
                 if occlusion_size > shape_size:
-                    shape_loc[1] = int((image_size//(num_frames-1))*random.randint(num_frames//2, num_frames-2) -
+                    if occlusion_move == 'down':
+                        sf = random.randint(num_frames//2, num_frames-2)
+                    else:
+                        sf = random.randint(1, num_frames//2)
+                    shape_loc[1] = int((image_size//(num_frames-1))*sf -
                                        occlusion_size//2 +
                                        random.randint(0, occlusion_size - shape_size))
                 else:
@@ -207,7 +214,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
         # using info, create the "video" and add to list of videos
         # video should be a np 2xn matrix of the "video" and annotations
-        video = compile_video((shape, shape_type), occlusion, background, shape_loc, occlusion_move, image_size, num_frames)
+        video = compile_video(shape, occlusion, background, shape_loc, occlusion_move, image_size, num_frames)
 
         dataset.append(video)
 
@@ -219,12 +226,31 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
 # testing code
 image_size = 320
-num_frames = 15
-shape = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
-occlusion = picture_objects.create_occlusion("vertical", image_size, 0.20)
-background = picture_objects.create_background()
+num_frames = 5
 
-video = compile_video(shape, occlusion, background, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
+'''
+# manual entry shape and occlusion
+shape1 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
+occlusion1 = picture_objects.create_occlusion("vertical", image_size, 0.20)
+background1 = picture_objects.create_background()
+
+shape2 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
+occlusion2 = picture_objects.create_occlusion("horizontal", image_size, 0.20)
+background2 = picture_objects.create_background()
+
+# video = compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
+# video = compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames)
+video = compile_video(shape1, occlusion1, background1, (100, 200), 'right', image_size, num_frames)
 
 for i in video[0]:
     i.show()
+'''
+
+'''
+# testing randomized dataset generation
+data = generate_dataset(4, (0.1, 0.25), (0.15, 0.33), 0.5, 10)
+
+for d in data:
+    for i in d[0]:
+        i.show()
+'''
