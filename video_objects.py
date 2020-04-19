@@ -1,6 +1,7 @@
 import picture_objects
 import random
 import numpy as np
+import cv2
 
 # output combined image with shape, background, occlusion
 # shape_info = (shape object, shape location, shape name)
@@ -9,8 +10,6 @@ def combine_image(shape_info, occlusion_info, background):
     ss = shape_info[0].size
     shape_loc = shape_info[1]
     occ_loc = occlusion_info[1]
-
-    print(shape_loc, occ_loc)
 
     background.paste(shape_info[0], shape_loc, shape_info[0])
     background.paste(occlusion_info[0], occ_loc, occlusion_info[0])
@@ -76,7 +75,6 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
         annots.append(annot)
 
     return np.array([video, annots])
-
 
 
 # generates a full dataset of videos with uniform distribution of different shapes, occlusions, and movement patterns
@@ -221,10 +219,27 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
     return dataset
 
 
+# convert list of images to mp4 video format (for human testing)
+def video_format(images, fr, videoname):
+    dimensions = np.array(images[0]).shape[:2]
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+
+    video = cv2.VideoWriter(videoname, fourcc, fr, dimensions)
+
+    # Appending the images to the video one by one
+    for image in images:
+        image_RGB = cv2.cvtColor(np.array(image), cv2.COLOR_BGRA2RGB)
+        video.write(np.array(image_RGB))
+
+    # Deallocating memories taken for window creation
+    cv2.destroyAllWindows()
+    video.release()  # releasing the video generated
+
+
 '''
 # testing code
 image_size = 320
-num_frames = 5
+num_frames = 15
 
 
 # manual entry shape and occlusion
@@ -239,6 +254,8 @@ background2 = picture_objects.create_background()
 # video = compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
 # video = compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames)
 video = compile_video(shape1, occlusion1, background1, (100, 200), 'right', image_size, num_frames)
+
+video_format(video[0], 5, "test.avi")
 
 for i in video[0]:
     i.show()
