@@ -65,12 +65,19 @@ def create_occlusion(orientation, image_size, percentage, color = 'black'):
 
 #one function to combine images together (for stationary objects)
 # place shape on background in a random location
-def combine_sb(shape, background, rotate_degree = 0):
+def combine_sb(shape, background, shape_loc = None, rotate_degree = 0):
     bs = background.size
     ss = shape[0].size
-    rand_x = random.randint(0,bs[0]-ss[0]-1)
-    rand_y = random.randint(0,bs[1]-ss[1]-1)
-    loc = (rand_x,rand_y)
+
+    print(bs, ss)
+
+    if not shape_loc:
+        rand_x = random.randint(0, bs[0]-ss[0]-1)
+        rand_y = random.randint(0, bs[1]-ss[1]-1)
+        loc = (rand_x,rand_y)
+    else:
+        loc = shape_loc
+
     background.paste(shape[0], loc, shape[0])
     height = ss[1]
     width = ss[0]
@@ -84,12 +91,18 @@ def combine_sb(shape, background, rotate_degree = 0):
     return background, annotation
 
 
-'''
+
 #testing to see if stuff works
-shape = create_shape(0.33, 'rectangle', color='purple', rotate=False)
+shape = create_shape(0.33, 'triangle', color='purple', rotate=False)
 shape_size = shape[0].size
 background = create_background()
 test = combine_sb(shape, background)
-test[0].show()
-print(test[1])
-'''
+
+occ = create_occlusion("vertical", image_size, 0.20)
+
+for i in range(15):
+    test_copy = test[0].copy()
+    test2 = combine_sb((occ, 0), test_copy, ((image_size//14)*i - occ.size[0]//2, 0))
+    test2[0].show()
+
+# print(test2[1])
