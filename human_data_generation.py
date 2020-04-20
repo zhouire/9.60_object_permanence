@@ -4,27 +4,6 @@ import picture_objects
 import video_objects
 import random
 
-# # manual entry shape and occlusion
-# shape1 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
-# occlusion1 = picture_objects.create_occlusion("vertical", image_size, 0.20)
-# background1 = picture_objects.create_background()
-
-# shape2 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
-# occlusion2 = picture_objects.create_occlusion("horizontal", image_size, 0.20)
-# background2 = picture_objects.create_background()
-
-# video = video_objects.compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
-# video1 = video_objects.compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames)
-# video2 = video_objects.compile_video(shape1, occlusion1, background1, (100, 200), 'right', image_size, num_frames)
-# video2 = video_objects.compile_video(shape1, occlusion1, background1, (100, 200), 'left', image_size, num_frames)
-# video2 = video_objects.compile_video(shape1, occlusion1, background1, (100, 200), 'up', image_size, num_frames)
-# video2 = video_objects.compile_video(shape1, occlusion1, background1, (100, 200), 'down', image_size, num_frames)
-
-# video_objects.video_format(video[0], 5, "test.avi")
-# video_objects.video_format(video1[0], 5, "test1.avi")
-# video_objects.video_format(video2[0], 5, "test2.avi")
-
-
 colors = ['red', 'blue', 'yellow', 'orange', 'purple', 'white', 'green', 'pink']
 shapes = ['circle', 'square', 'triangle']
 
