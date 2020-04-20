@@ -93,16 +93,16 @@ def combine_sb(shape, background, shape_loc = None, rotate_degree = 0):
 
 
 #testing to see if stuff works
-shape = create_shape(0.33, 'triangle', color='purple', rotate=False)
-shape_size = shape[0].size
-background = create_background()
-test = combine_sb(shape, background)
+# shape = create_shape(0.33, 'triangle', color='purple', rotate=False)
+# shape_size = shape[0].size
+# background = create_background()
+# test = combine_sb(shape, background)
 
-occ = create_occlusion("vertical", image_size, 0.20)
+# occ = create_occlusion("vertical", image_size, 0.20)
 
-for i in range(15):
-    test_copy = test[0].copy()
-    test2 = combine_sb((occ, 0), test_copy, ((image_size//14)*i - occ.size[0]//2, 0))
-    test2[0].show()
+# for i in range(15):
+#     test_copy = test[0].copy()
+#     test2 = combine_sb((occ, 0), test_copy, ((image_size//14)*i - occ.size[0]//2, 0))
+#     test2[0].show()
 
 # print(test2[1])
