@@ -16,9 +16,11 @@ def combine_image(shape_info, occlusion_info, background):
 
     height = ss[1]
     width = ss[0]
-    top_left = shape_loc
-    bottom_right = (shape_loc[0] + width, shape_loc[1] + height)
-    bounding_box = (top_left, bottom_right, width, height)
+    #top_left = shape_loc
+    #bottom_right = (shape_loc[0] + width, shape_loc[1] + height)
+    center_x = shape_loc[0]+width//2
+    center_y = shape_loc[1]+height//2
+    bounding_box = (center_x, center_y, width, height)
 
     # annotate with bounding box, shape name
     annotation = (bounding_box, shape_info[2])

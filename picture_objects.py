@@ -128,9 +128,11 @@ def combine_sb(shape, background, shape_loc = None):
     background.paste(shape[0], loc, shape[0])
     height = ss[1]
     width = ss[0]
-    top_left = loc
-    bottom_right = (loc[0]+width, loc[1]+height)
-    bounding_box = (top_left, bottom_right, width, height)
+    #top_left = loc
+    #bottom_right = (loc[0]+width, loc[1]+height)
+    center_x = loc[0]+width//2
+    center_y = loc[1]+height//2
+    bounding_box = (center_x, center_y, width, height)
     annotation = (bounding_box, shape[1])
     #background.show()
     #draw = ImageDraw.Draw(background)
