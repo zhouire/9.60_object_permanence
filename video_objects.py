@@ -23,7 +23,13 @@ def combine_image(shape_info, occlusion_info, background):
     bounding_box = (center_x, center_y, width, height)
 
     # annotate with bounding box, shape name
-    annotation = (bounding_box, shape_info[2])
+    if shape_info[2] == 'circle':
+        one_hot = [1,0,0]
+    elif shape_info[2] == 'square':
+        one_hot = [0,1,0]
+    elif shape_info[2] == 'triangle':
+        one_hot = [0,0,1]
+    annotation = (bounding_box, one_hot)
 
     return background, annotation
 

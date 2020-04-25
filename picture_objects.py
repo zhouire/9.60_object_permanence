@@ -133,7 +133,13 @@ def combine_sb(shape, background, shape_loc = None):
     center_x = loc[0]+width//2
     center_y = loc[1]+height//2
     bounding_box = (center_x, center_y, width, height)
-    annotation = (bounding_box, shape[1])
+    if shape[1] == 'circle':
+        one_hot = [1,0,0]
+    elif shape[1] == 'square':
+        one_hot = [0,1,0]
+    elif shape[1] == 'triangle':
+        one_hot = [0,0,1]
+    annotation = (bounding_box, one_hot)
     #background.show()
     #draw = ImageDraw.Draw(background)
     #draw.rectangle([bounding_box[0], bounding_box[1]], fill=(255, 255, 255, 100))
