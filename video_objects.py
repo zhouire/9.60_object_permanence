@@ -116,7 +116,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
         shape = picture_objects.create_shape(shape_size, shape_type, color)
         occlusion = picture_objects.create_occlusion(occlusion_type, image_size, occlusion_size)
-        background = picture_objects.create_background()
+        background = picture_objects.create_background_solid()
 
         shape_size = int(image_size*shape_size)
         occlusion_size = int(image_size*occlusion_size)
@@ -245,11 +245,11 @@ num_frames = 15
 # manual entry shape and occlusion
 shape1 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
 occlusion1 = picture_objects.create_occlusion("vertical", image_size, 0.20)
-background1 = picture_objects.create_background()
+background1 = picture_objects.create_background_solid()
 
 shape2 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=False)
 occlusion2 = picture_objects.create_occlusion("horizontal", image_size, 0.20)
-background2 = picture_objects.create_background()
+background2 = picture_objects.create_background_solid()
 
 # video = compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
 # video = compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames)
