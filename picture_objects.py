@@ -52,12 +52,10 @@ def create_background_random(image_color, noise_level  = None ,color = 'gray', i
     if noise_level == None:
         background= create_background_solid(color = 'gray', image_size = image_size)
         return background
-
-    if noise_level == 'less':
+    elif noise_level == 'less':
         num_items = random.randint(10,20)
     else:
         num_items = random.randint(25,35)
-    items = []
     size_range = (100/num_items)/2
     background = create_background_solid(color)
     shapes = ['circle', 'square', 'triangle', 'occlusion']
@@ -70,7 +68,7 @@ def create_background_random(image_color, noise_level  = None ,color = 'gray', i
     for n in range(num_items):
         size = random.uniform(0,size_range)/100
         shape_pick = shapes[random.randint(0,3)]
-        color_pick = colors[random.randint(0,5)]
+        color_pick = colors[random.randint(0,6)]
         if shape_pick != 'occlusion':
             shape = create_shape(size, shape_pick, color = color_pick, image_size = image_size)[0]
         else:

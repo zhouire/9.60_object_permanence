@@ -7,7 +7,7 @@ import random
 colors = ['red', 'blue', 'yellow', 'orange', 'purple', 'white', 'green', 'pink']
 shapes = ['circle', 'square', 'triangle']
 
-background = picture_objects.create_background()
+background = picture_objects.create_background_solid()
 occlusion_h = picture_objects.create_occlusion("horizontal", image_size, 0.20)
 occlusion_v = picture_objects.create_occlusion("vertical", image_size, 0.20)
 image_size = 320
