@@ -47,19 +47,26 @@ def create_background_solid(color = 'gray', image_size = image_size):
     return background
 
 #function to make background with other random objects to improve training
-def create_background_random(image_color, color = 'gray', image_size = image_size):
+def create_background_random(image_color, noise_level  = None ,color = 'gray', image_size = image_size):
     #pass in image color to avoid overspill with other objects
+    if noise_level == None:
+        background= create_background_solid(color = 'gray', image_size = image_size)
+        return background
+
+    if noise_level == 'less':
+        num_items = random.randint(10,20)
+    else:
+        num_items = random.randint(25,35)
     items = []
-    num_items = random.randint(10,20)
     size_range = (100/num_items)/2
     background = create_background_solid(color)
     shapes = ['circle', 'square', 'triangle', 'occlusion']
     colors = ['white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'black']
     colors.remove(image_color)
-    if num_items < 16:
-        num_rows = 3
-    else:
-         num_rows = 4
+    # if num_items < 16:
+    #     num_rows = 3
+    # else:
+    #      num_rows = 4
     for n in range(num_items):
         size = random.uniform(0,size_range)/100
         shape_pick = shapes[random.randint(0,3)]
@@ -135,11 +142,11 @@ def combine_sb(shape, background, shape_loc = None):
 
 
 #testing to see if stuff works
-shape = create_shape(0.33, 'triangle', color='purple', rotate=False)
-# shape_size = shape[0].size
-background = create_background_random('purple', color = 'gray', image_size = image_size)
-background.save('test.png')
-background.show()
+# shape = create_shape(0.33, 'triangle', color='purple', rotate=False)
+# # shape_size = shape[0].size
+# background = create_background_random('purple', noise_level = 'more',color = 'gray', image_size = image_size)
+# background.save('test.png')
+# background.show()
 # test = combine_sb(shape, background)
 
 # occ = create_occlusion("vertical", image_size, 0.20)
