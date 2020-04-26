@@ -28,7 +28,7 @@ def create_pretrain_set(set_size, savefile = None):
         data_set.append(obj)
 
     if savefile:
-        pickle.dump(data_set, open(savefile, 'w'))
+        pickle.dump(data_set, open(savefile, 'wb'))
 
     return data_set
 
