@@ -2,12 +2,13 @@ import picture_objects
 import random
 import pickle
 import numpy as np
+import cv2
 
 image_size = 320
 
 # savefile = filepath to save a pickled version of the final dataset (e.g. 'file.p'); None = don't save
 def create_pretrain_set(set_size, savefile = None):
-    #list of tuples (picture, bounding_box)
+    #list of tuples (picture, annotation)
     data_set = []
 
     shapes = ['circle', 'square', 'triangle']
@@ -24,16 +25,25 @@ def create_pretrain_set(set_size, savefile = None):
             background = picture_objects.create_background_random(color_pick, noise_level  = 'less' ,color = 'gray', image_size = image_size)
         else:
             background = picture_objects.create_background_random(color_pick, noise_level  = 'more' ,color = 'gray', image_size = image_size)
+
         obj = picture_objects.combine_sb(shape, background)
+
+        # if pickling the data, convert images to numpy, and switch from BGRA format to RGB format
+        if savefile:
+            obj[0] = cv2.cvtColor(np.array(obj[0]), cv2.COLOR_BGRA2RGB)
+
         data_set.append(obj)
 
     if savefile:
-        pickle.dump(data_set, open(savefile, 'wb'))
+        file = open(savefile, 'wb')
+        pickle.dump(data_set, file)
+        file.close()
 
-    return data_set
+    else:
+        return data_set
 
 
-# pretrain = create_pretrain_set(10)
-# for p in pretrain:
-#      p[0].show()
-#      print(p[1])
+#pretrain = create_pretrain_set(1)
+#for p in pretrain:
+    #p[0].show()
+    #print(p[1])

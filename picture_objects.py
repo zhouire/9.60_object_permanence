@@ -143,7 +143,7 @@ def combine_sb(shape, background, shape_loc = None):
     #background.show()
     #draw = ImageDraw.Draw(background)
     #draw.rectangle([bounding_box[0], bounding_box[1]], fill=(255, 255, 255, 100))
-    return background, annotation
+    return [background, annotation]
 
 
 
