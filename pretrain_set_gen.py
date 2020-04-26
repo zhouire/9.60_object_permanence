@@ -1,10 +1,12 @@
 import picture_objects
 import random
+import pickle
 import numpy as np
 
 image_size = 320
 
-def create_pretrain_set(set_size):
+# savefile = filepath to save a pickled version of the final dataset (e.g. 'file.p'); None = don't save
+def create_pretrain_set(set_size, savefile = None):
     #list of tuples (picture, bounding_box)
     data_set = []
 
@@ -22,8 +24,12 @@ def create_pretrain_set(set_size):
             background = picture_objects.create_background_random(color_pick, noise_level  = 'less' ,color = 'gray', image_size = image_size)
         else:
             background = picture_objects.create_background_random(color_pick, noise_level  = 'more' ,color = 'gray', image_size = image_size)
-        obj =  picture_objects.combine_sb(shape, background)
+        obj = picture_objects.combine_sb(shape, background)
         data_set.append(obj)
+
+    if savefile:
+        pickle.dump(data_set, open(savefile, 'w'))
+
     return data_set
 
 

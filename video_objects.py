@@ -2,6 +2,7 @@ import picture_objects
 import random
 import numpy as np
 import cv2
+import pickle
 
 # output combined image with shape, background, occlusion
 # shape_info = (shape object, shape location, shape name)
@@ -119,17 +120,19 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
 #   occlusions = [tuple of occlusion types]
 #   movements = [tuple of movement types]
 #   mov_dir = #directions of movement (1 for up or right, 2 for up/down, left/right)
+#   savefile = file path to save pickled version of final dataset; None = don't save
 
 def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_occlusions, num_frames,
                      image_size = 320,
                      shapes = ("circle", "square", "triangle"),
                      occlusions = ("horizontal", "vertical"),
                      movements = ("shape", "occlusion"),
-                     mov_dir = 2, percent_occ = False):
+                     mov_dir = 2,
+                     percent_occ = False,
+                     savefile = None):
 
     colors = ['white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
 
-    #TODO: IMPLEMENT SOME SORT OF SAVE FUNCTION INSTEAD OF JUST RETURNING A LIST OF OBJECTS
     dataset = []
 
     for i in range(num_videos):
@@ -246,6 +249,9 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
         video = compile_video(shape, occlusion, background, shape_loc, occlusion_move, image_size, num_frames, percent_occ)
 
         dataset.append(video)
+
+    if savefile:
+        pickle.dump(dataset, open(savefile, 'w'))
 
     return dataset
 
