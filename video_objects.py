@@ -6,7 +6,7 @@ import cv2
 # output combined image with shape, background, occlusion
 # shape_info = (shape object, shape location, shape name)
 # occlusion_info = (occlusion, location)
-def combine_image(shape_info, occlusion_info, background):
+def combine_image(shape_info, occlusion_info, background, percent_occ = False):
     ss = shape_info[0].size
     shape_loc = shape_info[1]
     occ_loc = occlusion_info[1]
@@ -30,9 +30,32 @@ def combine_image(shape_info, occlusion_info, background):
     elif shape_info[2] == 'triangle':
         one_hot = [0,0,1]
     annotation = (bounding_box, one_hot)
-
+    if percent_occ:
+        po = calc_percent_occ(shape_info, occlusion_info)
+        annotation = (annotation[0], annotation[1], po)
+    # print(annotation)
+    # background.show()
     return background, annotation
 
+def calc_percent_occ(shape_info, occlusion_info):
+    ss = shape_info[0].size
+    shape_width = ss[0]
+    shape_height = ss[1]
+    shape_loc = shape_info[1]
+    shape_tl = (shape_loc[0], shape_loc[1])
+    shape_br = (shape_loc[0]+shape_width, shape_loc[1]+shape_height)
+
+    os = occlusion_info[0].size
+    occ_loc = occlusion_info[1]
+    occ_height = os[1]
+    occ_width = os[0]
+    occ_tl = (occ_loc[0], occ_loc[1])
+    occ_br = (occ_loc[0]+occ_width, occ_loc[1]+occ_height)
+    overlap_area = (min(shape_br[0], occ_br[0])-max(shape_tl[0], occ_tl[0]))*(min(shape_br[1], occ_br[1])-max(shape_tl[1], occ_tl[1]))
+    
+    shape_area = shape_height*shape_width
+
+    return max(overlap_area/shape_area, 0)
 
 # given objects and movement information, compiles into a "video" (list of image objects)
 # params:
@@ -43,7 +66,7 @@ def combine_image(shape_info, occlusion_info, background):
 #   shape_move = ((start_x, start_y), (end_x, end_y)) or single location (x,y) if not moving
 #   occlusion_move = one of ['up', 'down', 'left', 'right'] or single location (x,y) if not moving
 #   num_frames = number of frames
-def compile_video(shape_info, occlusion, background, shape_move, occlusion_move, image_size, num_frames):
+def compile_video(shape_info, occlusion, background, shape_move, occlusion_move, image_size, num_frames, percent_occ = False):
     # create list of locations if the occlusion is moving
     if type(occlusion_move) == str:
         shape_locs = [shape_move for f in range(num_frames)]
@@ -77,7 +100,7 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
 
         img, annot = combine_image((shape_info[0], shape_locs[i], shape_info[1]),
                                    (occlusion, occ_locs[i]),
-                                   background_copy)
+                                   background_copy, percent_occ)
 
         video.append(img)
         annots.append(annot)
@@ -102,7 +125,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                      shapes = ("circle", "square", "triangle"),
                      occlusions = ("horizontal", "vertical"),
                      movements = ("shape", "occlusion"),
-                     mov_dir = 2):
+                     mov_dir = 2, percent_occ = False):
 
     colors = ['white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
 
@@ -220,7 +243,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
         # using info, create the "video" and add to list of videos
         # video should be a np 2xn matrix of the "video" and annotations
-        video = compile_video(shape, occlusion, background, shape_loc, occlusion_move, image_size, num_frames)
+        video = compile_video(shape, occlusion, background, shape_loc, occlusion_move, image_size, num_frames, percent_occ)
 
         dataset.append(video)
 
@@ -259,8 +282,8 @@ shape2 = picture_objects.create_shape(0.25, 'triangle', color='purple', rotate=F
 occlusion2 = picture_objects.create_occlusion("horizontal", image_size, 0.20)
 background2 = picture_objects.create_background_solid()
 
-# video = compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames)
-# video = compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames)
+# video = compile_video(shape1, occlusion1, background1, ((20, 100), (300, 200)), (160, 0), image_size, num_frames, percent_occ = False)
+# video = compile_video(shape2, occlusion2, background2, ((300, 200), (20, 50)), (0, 150), image_size, num_frames, percent_occ = True)
 video = compile_video(shape1, occlusion1, background1, (100, 200), 'right', image_size, num_frames)
 
 video_format(video[0], 5, "test.avi")
