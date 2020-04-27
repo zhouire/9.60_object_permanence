@@ -43,7 +43,7 @@ def create_pretrain_set(set_size, savefile = None):
         return data_set
 
 
-#pretrain = create_pretrain_set(1)
+pretrain = create_pretrain_set(100, "debug_images_test.p")
 #for p in pretrain:
     #p[0].show()
     #print(p[1])

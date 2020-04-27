@@ -251,7 +251,9 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
         dataset.append(video)
 
     if savefile:
-        pickle.dump(dataset, open(savefile, 'wb'))
+        file = open(savefile, 'wb')
+        pickle.dump(dataset, file)
+        file.close()
 
     return dataset
 
