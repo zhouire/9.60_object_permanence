@@ -26,7 +26,12 @@ def get_train_loader(batch_size):
     return train_loader
 
 if __name__ == "__main__":
+    # GPU training if possible
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(device)
+
     net = CNN()
+    net.to(device)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
@@ -38,7 +43,7 @@ if __name__ == "__main__":
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):
             # get the inputs; data is a list of [inputs, labels]
-            inputs, labels = data['image'], data['annotation']
+            inputs, labels = data['image'].to(device), data['annotation'].to(device)
             # change ByteTensor (default) to FloatTensor
             inputs = inputs.type('torch.FloatTensor')
             labels = labels.squeeze(1).type('torch.LongTensor')
@@ -61,7 +66,7 @@ if __name__ == "__main__":
                       (epoch + 1, i + 1, running_loss / 1))
                 running_loss = 0.0
 
-    PATH = 'cnn_net.pt'
+    PATH = 'trained_models/cnn_net.pt'
     torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
