@@ -69,7 +69,7 @@ if __name__ == "__main__":
                       (epoch + 1, i + 1, running_loss / 20))
                 running_loss = 0.0
 
-    PATH = 'data/trained_models/cnn_net_10epoch.pt'
+    PATH = 'trained_models/cnn_net_10epoch.pt'
     torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
