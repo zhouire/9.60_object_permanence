@@ -2,11 +2,12 @@ import picture_objects
 import random
 import numpy as np
 import cv2
-import pickle
+from PIL import Image
 
 # output combined image with shape, background, occlusion
 # shape_info = (shape object, shape location, shape name)
 # occlusion_info = (occlusion, location)
+# return: (image, [label idx, x, y, w, h, percent occlusion])
 def combine_image(shape_info, occlusion_info, background, percent_occ = False):
     ss = shape_info[0].size
     shape_loc = shape_info[1]
@@ -21,19 +22,22 @@ def combine_image(shape_info, occlusion_info, background, percent_occ = False):
     #bottom_right = (shape_loc[0] + width, shape_loc[1] + height)
     center_x = shape_loc[0]+width//2
     center_y = shape_loc[1]+height//2
-    bounding_box = (center_x, center_y, width, height)
+    bounding_box = [center_x, center_y, width, height]
 
     # annotate with bounding box, shape name
     if shape_info[2] == 'circle':
-        one_hot = [1,0,0]
+        #one_hot = [1,0,0]
+        one_hot_idx = 0
     elif shape_info[2] == 'square':
-        one_hot = [0,1,0]
+        #one_hot = [0,1,0]
+        one_hot_idx = 1
     elif shape_info[2] == 'triangle':
-        one_hot = [0,0,1]
-    annotation = (bounding_box, one_hot)
+        #one_hot = [0,0,1]
+        one_hot_idx = 2
+    annotation = [one_hot_idx] + bounding_box
     if percent_occ:
         po = calc_percent_occ(shape_info, occlusion_info)
-        annotation = (annotation[0], annotation[1], po)
+        annotation = annotation + po
     # print(annotation)
     # background.show()
     return background, annotation
@@ -106,7 +110,7 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
         video.append(img)
         annots.append(annot)
 
-    return np.array([video, annots])
+    return [video, annots]
 
 
 # generates a full dataset of videos with uniform distribution of different shapes, occlusions, and movement patterns
@@ -120,7 +124,7 @@ def compile_video(shape_info, occlusion, background, shape_move, occlusion_move,
 #   occlusions = [tuple of occlusion types]
 #   movements = [tuple of movement types]
 #   mov_dir = #directions of movement (1 for up or right, 2 for up/down, left/right)
-#   savefile = file path to save pickled version of final dataset; None = don't save
+#   savepath = general directory to save videos in (as collections of images)
 
 def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_occlusions, num_frames,
                      image_size = 320,
@@ -129,11 +133,16 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                      movements = ("shape", "occlusion"),
                      mov_dir = 2,
                      percent_occ = False,
-                     savefile = None):
+                     savepath = None):
 
     colors = ['white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
 
     dataset = []
+
+    # meta-txt containing a list of txt files, each of which contains info for one video
+    if savepath:
+        file_allimg = open(savepath + "images.txt", 'w')
+        file_alllabel = open(savepath + "labels.txt", 'w')
 
     for i in range(num_videos):
         shape_type = random.choice(shapes)
@@ -248,12 +257,42 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
         # video should be a np 2xn matrix of the "video" and annotations
         video = compile_video(shape, occlusion, background, shape_loc, occlusion_move, image_size, num_frames, percent_occ)
 
+        # save each video as a collection of images, with a frames_n.txt file containing the frames in order, and
+        # a labels_n.txt file containing the labels for each frame in order
+        # compile meta-lists images.txt and labels.txt containing a list of the txt files defining each video
+        if savepath:
+            frames, annots = video
+
+            image_file_path = savepath + "frames_" + str(i) + ".txt"
+            label_file_path = savepath + "labels_" + str(i) + ".txt"
+            image_file = open(image_file_path, 'w')
+            label_file = open(label_file_path, 'w')
+
+            for f in range(len(frames)):
+                img_path = savepath + "video" + str(i) + "_frame" + str(f) + ".jpg"
+
+                # convert image from RGBA to RGB
+                img = frames[f].copy()
+                rgb_img = Image.new("RGB", (image_size, image_size), (255, 255, 255))
+                rgb_img.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+                rgb_img.save(img_path)
+
+                image_file.write(img_path + '\n')
+
+                label = str(annots[f])
+                label_file.write(label + '\n')
+
+            image_file.close()
+            label_file.close()
+
+            file_allimg.write(image_file_path + '\n')
+            file_alllabel.write(label_file_path + '\n')
+
         dataset.append(video)
 
-    if savefile:
-        file = open(savefile, 'wb')
-        pickle.dump(dataset, file)
-        file.close()
+    if savepath:
+        file_allimg.close()
+        file_alllabel.close()
 
     return dataset
 
@@ -300,10 +339,11 @@ for i in video[0]:
     i.show()
 
 
-
+'''
 # testing randomized dataset generation
-data = generate_dataset(4, (0.1, 0.25), (0.15, 0.33), 0.5, 10)
+data = generate_dataset(4, (0.1, 0.25), (0.15, 0.33), 0.5, 10, savepath = "data/videos/")
 
+'''
 for d in data:
     for i in d[0]:
         i.show()
