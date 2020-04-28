@@ -47,7 +47,6 @@ if __name__ == "__main__":
             # change ByteTensor (default) to FloatTensor
             inputs = inputs.type('torch.FloatTensor').to(device)
             labels = labels.squeeze(1).type('torch.LongTensor').to(device)
-            print(labels)
 
             # zero the parameter gradients
             optimizer.zero_grad()
