@@ -16,7 +16,7 @@ train_set = ShapeImageDataset(train_images, train_labels, yolo=False, transform=
 #Test loader has constant batch sizes, so we can define it directly
 #test_loader = torch.utils.data.DataLoader(test_set, batch_size=4, shuffle=True, num_workers=2)
 
-epochs = 10
+epochs = 15
 batch_size = 64
 lr = 0.001
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                       (epoch + 1, i + 1, running_loss / 20))
                 running_loss = 0.0
 
-    PATH = 'trained_models/cnn_net_10epoch.pt'
+    PATH = 'data/trained_models/cnn_net_10epoch.pt'
     torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
