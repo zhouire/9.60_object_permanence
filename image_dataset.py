@@ -44,7 +44,7 @@ class ShapeImageDataset(Dataset):
                 # NOTE: combining the bounding box and label vectors
                 annot = np.array(label)
             else:
-                # find index of 1 in one-hot label vector
+                # find index of 1 in one-hot label vector (first number in annotation)
                 annot = np.array([label[0]])
 
             self.annotation.append(annot)
