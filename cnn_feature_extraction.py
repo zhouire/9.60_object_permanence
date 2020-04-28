@@ -28,3 +28,14 @@ class CNN(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
+    def get_feature_vec(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = self.pool(F.relu(self.conv3(x)))
+        x = self.pool(F.relu(self.conv4(x)))
+        x = x.view(-1, 64 * 16 * 16)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+
+        return x

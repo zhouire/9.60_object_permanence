@@ -16,8 +16,8 @@ train_set = ShapeImageDataset(train_images, train_labels, yolo=False, transform=
 #Test loader has constant batch sizes, so we can define it directly
 #test_loader = torch.utils.data.DataLoader(test_set, batch_size=4, shuffle=True, num_workers=2)
 
-epochs = 10
-batch_size = 16
+epochs = 1
+batch_size = 128
 lr = 0.001
 
 def get_train_loader(batch_size):
