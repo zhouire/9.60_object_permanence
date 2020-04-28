@@ -54,7 +54,11 @@ if __name__ == "__main__":
 
             # forward + backward + optimize
             outputs = net(inputs)
-            outputs = outputs.type("torch.FloatTensor")
+            if device.type == 'cpu':
+                outputs = outputs.type("torch.FloatTensor")
+            else:
+                outputs = outputs.type("torch.cuda.FloatTensor")
+
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
