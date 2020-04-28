@@ -6,10 +6,11 @@ from cnn_feature_extraction import CNN
 from image_dataset import ShapeImageDataset, ToTensor
 
 # edit this to reflect real dataset file
-train_path = "debug_images.p"
+train_images = "data/pretrain/images.txt"
+train_labels = "data/pretrain/labels.txt"
 #test_path = "debug_images_test.p"
 
-train_set = ShapeImageDataset(train_path, yolo=False, transform=transforms.Compose([ToTensor()]))
+train_set = ShapeImageDataset(train_images, train_labels, yolo=False, transform=transforms.Compose([ToTensor()]))
 #test_set = ShapeImageDataset(test_path, transform=transforms.Compose([ToTensor()]))
 
 #Test loader has constant batch sizes, so we can define it directly

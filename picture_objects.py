@@ -74,10 +74,12 @@ def create_background_random(image_color, noise_level  = None ,color = 'gray', i
         else:
             rand = random.randint(0,1)
             if rand == 0:
-                shape = create_occlusion('vertical', image_size, size, color = color_pick)
+                #shape = create_occlusion('vertical', image_size, size, color = color_pick)
+                shape = create_occlusion('vertical', image_size, size, color="black")
             else:
                 perc = random.uniform(0, 0.33)
-                shape = create_occlusion('vertical', image_size, perc, color = color_pick)
+                #shape = create_occlusion('vertical', image_size, perc, color = color_pick)
+                shape = create_occlusion('vertical', image_size, perc, color="black")
         degree = random.randint(0,360)
         shape = shape.rotate(degree, expand=True)
         #ss = shape.size
@@ -132,14 +134,18 @@ def combine_sb(shape, background, shape_loc = None):
     #bottom_right = (loc[0]+width, loc[1]+height)
     center_x = loc[0]+width//2
     center_y = loc[1]+height//2
-    bounding_box = (center_x, center_y, width, height)
+    # scale bounding box to be [0,1]
+    bounding_box = [center_x/image_size, center_y/image_size, width/image_size, height/image_size]
     if shape[1] == 'circle':
-        one_hot = [1,0,0]
+        #one_hot = [1,0,0]
+        one_hot_idx = 0
     elif shape[1] == 'square':
-        one_hot = [0,1,0]
+        #one_hot = [0,1,0]
+        one_hot_idx = 1
     elif shape[1] == 'triangle':
-        one_hot = [0,0,1]
-    annotation = (bounding_box, one_hot)
+        #one_hot = [0,0,1]
+        one_hot_idx = 2
+    annotation = (bounding_box, one_hot_idx)
     #background.show()
     #draw = ImageDraw.Draw(background)
     #draw.rectangle([bounding_box[0], bounding_box[1]], fill=(255, 255, 255, 100))

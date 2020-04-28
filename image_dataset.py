@@ -2,18 +2,19 @@ import os
 import torch
 import pandas as pd
 import numpy as np
-import pickle
 import cv2
+import json
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
+from PIL import Image
 
 
 # this dataset consists of x_data = images, y_data = (x, y, w, h, label)
 class ShapeImageDataset(Dataset):
 
-    # input is a file path containing a pickled image dataset, and whether or not the target model is YOLO
+    # input is txt files containing a list of image paths and labels, and whether or not the target model is YOLO
     # if working with CNN pretraining, just output the index of the one-hot label vector
-    def __init__(self, pickle_file, yolo = True, transform = None):
+    def __init__(self, imagefile, labelfile, yolo = True, transform = None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -21,22 +22,30 @@ class ShapeImageDataset(Dataset):
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
-        file = open(pickle_file, 'rb')
-        data = pickle.load(file)
-        file.close()
+        image_file = open(imagefile, 'r')
+        label_file = open(labelfile, 'r')
+        image_paths = image_file.readlines()
+        image_labels = label_file.readlines()
+        image_file.close()
+        label_file.close()
+
 
         self.images = []
         self.annotation = []
         self.transform = transform
 
-        for d in data:
-            self.images.append(d[0])
+        for p in range(len(image_paths)):
+            # get rid of newline at end of line, convert str representation of list back to list
+            img = np.array(Image.open(image_paths[p][:-1]).convert('RGB'))
+            label = json.loads(image_labels[p][:-1])
+            self.images.append(img)
+
             if yolo:
                 # NOTE: combining the bounding box and label vectors
-                annot = np.concatenate((np.array(d[1][0]), np.array(d[1][1])))
+                annot = np.array(label)
             else:
                 # find index of 1 in one-hot label vector
-                annot = np.array([d[1][1].index(1)])
+                annot = np.array([label[0]])
 
             self.annotation.append(annot)
 

@@ -3,16 +3,24 @@ import random
 import pickle
 import numpy as np
 import cv2
+from PIL import Image, ImageDraw, ImageFilter
 
 image_size = 320
 
-# savefile = filepath to save a pickled version of the final dataset (e.g. 'file.p'); None = don't save
-def create_pretrain_set(set_size, savefile = None):
+# picklefile = filepath to save a pickled version of the final dataset (e.g. 'file.p'); None = don't save
+# savepath = directory to save the images making up the dataset
+# imagefile = location to save list of filenames
+# labelfile = location to save list of corresponding labels
+def create_pretrain_set(set_size, picklefile = None, savepath = None, imagefile = None, labelfile = None):
     #list of tuples (picture, annotation)
     data_set = []
 
     shapes = ['circle', 'square', 'triangle']
     colors = ['white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
+
+    if imagefile and labelfile:
+        image_file = open(imagefile, 'a')
+        label_file = open(labelfile, 'a')
 
     for i in range(set_size):
         shape_pick = shapes[random.randint(0,2)]
@@ -28,14 +36,33 @@ def create_pretrain_set(set_size, savefile = None):
 
         obj = picture_objects.combine_sb(shape, background)
 
+        if savepath and imagefile and labelfile:
+            img_path = savepath + 'pretrainimg_' + str(i) + ".jpg"
+
+            # cnovert image from RGBA to RGB
+            img = obj[0].copy()
+            rgb_img = Image.new("RGB", (image_size, image_size), (255, 255, 255))
+            rgb_img.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+            rgb_img.save(img_path)
+
+            image_file.write(img_path + '\n')
+
+            # label index, x, y, w, h ([0,1] scale)
+            label = str([obj[1][1]] + obj[1][0])
+            label_file.write(label + '\n')
+
         # if pickling the data, convert images to numpy, and switch from BGRA format to RGB format
-        if savefile:
+        if picklefile:
             obj[0] = cv2.cvtColor(np.array(obj[0]), cv2.COLOR_BGRA2RGB)
 
         data_set.append(obj)
 
-    if savefile:
-        file = open(savefile, 'wb')
+    if imagefile and labelfile:
+        image_file.close()
+        label_file.close()
+
+    if picklefile:
+        file = open(picklefile, 'wb')
         pickle.dump(data_set, file)
         file.close()
 
@@ -43,7 +70,12 @@ def create_pretrain_set(set_size, savefile = None):
         return data_set
 
 
-pretrain = create_pretrain_set(100, "debug_images_test.p")
+pretrain = create_pretrain_set(10000,
+                               savepath="data/pretrain/images/",
+                               imagefile="data/pretrain/images.txt",
+                               labelfile="data/pretrain/labels.txt")
+
+
 #for p in pretrain:
     #p[0].show()
     #print(p[1])
