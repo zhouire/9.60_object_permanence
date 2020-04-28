@@ -4,6 +4,8 @@ import numpy as np
 import cv2
 from PIL import Image
 
+image_size = 320
+
 # output combined image with shape, background, occlusion
 # shape_info = (shape object, shape location, shape name)
 # occlusion_info = (occlusion, location)
@@ -22,7 +24,8 @@ def combine_image(shape_info, occlusion_info, background, percent_occ = False):
     #bottom_right = (shape_loc[0] + width, shape_loc[1] + height)
     center_x = shape_loc[0]+width//2
     center_y = shape_loc[1]+height//2
-    bounding_box = [center_x, center_y, width, height]
+    # scale to [0,1]
+    bounding_box = [center_x/image_size, center_y/image_size, width/image_size, height/image_size]
 
     # annotate with bounding box, shape name
     if shape_info[2] == 'circle':
