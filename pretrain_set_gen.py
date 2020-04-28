@@ -11,7 +11,7 @@ image_size = 320
 # savepath = directory to save the images making up the dataset
 # imagefile = location to save list of filenames
 # labelfile = location to save list of corresponding labels
-def create_pretrain_set(set_size, picklefile = None, savepath = None, imagefile = None, labelfile = None):
+def create_pretrain_set(set_size, picklefile = None, imagesavepath = None, labelsavepath = None, imagefile = None, labelfile = None):
     #list of tuples (picture, annotation)
     data_set = []
 
@@ -36,8 +36,9 @@ def create_pretrain_set(set_size, picklefile = None, savepath = None, imagefile 
 
         obj = picture_objects.combine_sb(shape, background)
 
-        if savepath and imagefile and labelfile:
-            img_path = savepath + 'pretrainimg_' + str(i) + ".jpg"
+        if imagesavepath and labelsavepath and imagefile and labelfile:
+            img_path = imagesavepath + 'pretrainimg_' + str(i) + ".jpg"
+            label_path = labelsavepath + 'pretraining_' + str(i) + ".txt"
 
             # cnovert image from RGBA to RGB
             img = obj[0].copy()
@@ -48,8 +49,14 @@ def create_pretrain_set(set_size, picklefile = None, savepath = None, imagefile 
             image_file.write(img_path + '\n')
 
             # label index, x, y, w, h ([0,1] scale)
-            label = str([obj[1][1]] + obj[1][0])
-            label_file.write(label + '\n')
+            label = [obj[1][1]] + obj[1][0]
+            label_file.write(str(label) + '\n')
+
+            # save labels as individual txt files with the same name as the corresponding image
+            label_str = ' '.join(map(str, label))
+            newlabel = open(label_path, 'w')
+            newlabel.write(label_str)
+            newlabel.close()
 
         # if pickling the data, convert images to numpy, and switch from BGRA format to RGB format
         if picklefile:
@@ -71,8 +78,9 @@ def create_pretrain_set(set_size, picklefile = None, savepath = None, imagefile 
 
 
 pretrain = create_pretrain_set(10000,
-                               savepath="data/pretrain/images/",
-                               imagefile="data/pretrain/images.txt",
+                               imagesavepath="data/pretrain/images/",
+                               labelsavepath="data/pretrain/labels/",
+                               imagefile="data/pretrain/train.txt",
                                labelfile="data/pretrain/labels.txt")
 
 
