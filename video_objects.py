@@ -272,7 +272,8 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
             label_file = open(label_file_path, 'w')
 
             for f in range(len(frames)):
-                img_path = savepath + "video" + str(i) + "_frame" + str(f) + ".jpg"
+                img_path = savepath + "images/video" + str(i) + "_frame" + str(f) + ".jpg"
+                label_path = savepath + "labels/video" + str(i) + "_frame" + str(f) + ".txt"
 
                 # convert image from RGBA to RGB
                 img = frames[f].copy()
@@ -282,8 +283,14 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
                 image_file.write(img_path + '\n')
 
-                label = str(annots[f])
-                label_file.write(label + '\n')
+                label = annots[f]
+                label_file.write(str(label) + '\n')
+
+                # write each label to its own txt file
+                label_str = ' '.join(map(str, label))
+                newlabel = open(label_path, 'w')
+                newlabel.write(label_str)
+                newlabel.close()
 
             image_file.close()
             label_file.close()
