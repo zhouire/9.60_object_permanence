@@ -38,7 +38,7 @@ def create_pretrain_set(set_size, picklefile = None, imagesavepath = None, label
 
         if imagesavepath and labelsavepath and imagefile and labelfile:
             img_path = imagesavepath + 'pretrainimg_' + str(i) + ".jpg"
-            label_path = labelsavepath + 'pretraining_' + str(i) + ".txt"
+            label_path = labelsavepath + 'pretrainimg_' + str(i) + ".txt"
 
             # cnovert image from RGBA to RGB
             img = obj[0].copy()
