@@ -40,7 +40,7 @@ def combine_image(shape_info, occlusion_info, background, percent_occ = False):
     annotation = [one_hot_idx] + bounding_box
     if percent_occ:
         po = calc_percent_occ(shape_info, occlusion_info)
-        annotation = annotation + po
+        annotation = annotation + [po]
     # print(annotation)
     # background.show()
     return background, annotation
@@ -146,6 +146,7 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
     if savepath:
         file_videoimgs = open(savepath + "images.txt", 'w')
         file_videolabels = open(savepath + "labels.txt", 'w')
+        file_videopercentocc = open(savepath + "percentocc.txt", 'w')
         # this file contains the path to every image in the dataset (not just the videos)
         file_allimages = open(savepath + "allimages.txt", 'w')
 
@@ -273,6 +274,9 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
             # a list of labels for each frame of the video
             label_list = []
 
+            if percent_occ:
+                percentocc_list = []
+
             '''
             image_file_path = savepath + "frames_" + str(i) + ".txt"
             label_file_path = savepath + "labels_" + str(i) + ".txt"
@@ -293,6 +297,11 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                 #image_file.write(img_path + '\n')
 
                 label = annots[f]
+
+                if percent_occ:
+                    label_percentocc = label.copy()[-1]
+                    label = label[:-1]
+
                 #label_file.write(str(label) + '\n')
 
 
@@ -308,6 +317,9 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                 # put image path and label in respective lists
                 img_list.append(img_path)
                 label_list.append(label)
+                if percent_occ:
+                    percentocc_list.append(label_percentocc)
+
 
             #image_file.close()
             #label_file.close()
@@ -317,12 +329,17 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
             # save list of labels as str representation (retrieve with json.loads())
             file_videolabels.write(str(label_list) + '\n')
 
+            file_videopercentocc.write(str(percentocc_list) + '\n')
+
         dataset.append(video)
 
     if savepath:
         file_videoimgs.close()
         file_videolabels.close()
         file_allimages.close()
+
+        if percent_occ:
+            file_videopercentocc.close()
 
     return dataset
 
@@ -371,7 +388,7 @@ for i in video[0]:
 
 '''
 # testing randomized dataset generation
-data = generate_dataset(1000, (0.1, 0.25), (0.15, 0.33), 0.5, 15, savepath = "data/videos/")
+data = generate_dataset(1000, (0.1, 0.25), (0.15, 0.33), 0.5, 15, percent_occ = True, savepath = "data/videos/")
 
 '''
 for d in data:
