@@ -142,12 +142,10 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
 
     dataset = []
 
-    # meta-txt containing a list of lists, each of which contains info for one video
+    # meta-txt containing a list of txt files, each of which contains info for one video
     if savepath:
-        file_videoimgs = open(savepath + "images.txt", 'w')
-        file_videolabels = open(savepath + "labels.txt", 'w')
-        # this file contains the path to every image in the dataset (not just the videos)
-        file_allimages = open(savepath + "allimages.txt", 'w')
+        file_allimg = open(savepath + "images.txt", 'w')
+        file_alllabel = open(savepath + "labels.txt", 'w')
 
     for i in range(num_videos):
         shape_type = random.choice(shapes)
@@ -268,17 +266,10 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
         if savepath:
             frames, annots = video
 
-            # a list of strings (paths to frames of the video)
-            img_list = []
-            # a list of labels for each frame of the video
-            label_list = []
-
-            '''
             image_file_path = savepath + "frames_" + str(i) + ".txt"
             label_file_path = savepath + "labels_" + str(i) + ".txt"
             image_file = open(image_file_path, 'w')
             label_file = open(label_file_path, 'w')
-            '''
 
             for f in range(len(frames)):
                 img_path = savepath + "images/video" + str(i) + "_frame" + str(f) + ".jpg"
@@ -290,11 +281,10 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                 rgb_img.paste(img, mask=img.split()[3])  # 3 is the alpha channel
                 rgb_img.save(img_path)
 
-                #image_file.write(img_path + '\n')
+                image_file.write(img_path + '\n')
 
                 label = annots[f]
-                #label_file.write(str(label) + '\n')
-
+                label_file.write(str(label) + '\n')
 
                 # write each label to its own txt file
                 label_str = ' '.join(map(str, label))
@@ -302,27 +292,17 @@ def generate_dataset(num_videos, shape_size_range, occlusion_size_range, full_oc
                 newlabel.write(label_str)
                 newlabel.close()
 
-                # write image path to unified image file
-                file_allimages.write(img_path + '\n')
+            image_file.close()
+            label_file.close()
 
-                # put image path and label in respective lists
-                img_list.append(img_path)
-                label_list.append(label)
-
-            #image_file.close()
-            #label_file.close()
-
-            # save list of videoframes as a space-separated line
-            file_videoimgs.write(' '.join(img_list) + '\n')
-            # save list of labels as str representation (retrieve with json.loads())
-            file_videolabels.write(str(label_list) + '\n')
+            file_allimg.write(image_file_path + '\n')
+            file_alllabel.write(label_file_path + '\n')
 
         dataset.append(video)
 
     if savepath:
-        file_videoimgs.close()
-        file_videolabels.close()
-        file_allimages.close()
+        file_allimg.close()
+        file_alllabel.close()
 
     return dataset
 
@@ -371,7 +351,7 @@ for i in video[0]:
 
 '''
 # testing randomized dataset generation
-data = generate_dataset(1000, (0.1, 0.25), (0.15, 0.33), 0.5, 15, savepath = "data/videos/")
+data = generate_dataset(4, (0.1, 0.25), (0.15, 0.33), 0.5, 10, savepath = "data/videos/")
 
 '''
 for d in data:
