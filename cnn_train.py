@@ -6,7 +6,7 @@ from cnn_feature_extraction import CNN
 from image_dataset import ShapeImageDataset, ToTensor
 
 # edit this to reflect real dataset file
-train_images = "data/pretrain/images.txt"
+train_images = "data/pretrain/train.txt"
 train_labels = "data/pretrain/labels.txt"
 #test_path = "debug_images_test.p"
 
