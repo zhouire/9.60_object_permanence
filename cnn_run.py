@@ -10,6 +10,7 @@ print(device)
 
 net = CNN()
 net.load_state_dict(torch.load("trained_models/cnn_net_10epoch.pt", map_location=device))
+net.to(device)
 
 test_images = "data/videos/allimages.txt"
 test_set = VideoCNNDataset(test_images, transform=transforms.Compose([ToTensor()]))
