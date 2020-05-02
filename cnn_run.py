@@ -32,7 +32,5 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-        print(paths)
-
 print('Accuracy of the network on video frames: %d %%' % (
     100 * correct / total))
