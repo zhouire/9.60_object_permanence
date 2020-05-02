@@ -81,5 +81,5 @@ class ToTensor(object):
         # torch image: C X H X W
         image = image.transpose((2, 0, 1))
         return {'image': torch.from_numpy(image),
-                'path': torch.from_numpy(path),
+                'path': path,
                 'annotation': torch.from_numpy(annotation)}
