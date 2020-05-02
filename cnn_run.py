@@ -21,7 +21,12 @@ correct = 0
 with torch.no_grad():
     for data in test_loader:
         images, paths, labels = data["image"], data['path'], data['annotation']
+
+        images = images.type('torch.FloatTensor').to(device)
+        labels = labels.squeeze(1).type('torch.LongTensor').to(device)
+
         outputs = net(images)
+        outputs = outputs.type("torch.FloatTensor").to(device)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
