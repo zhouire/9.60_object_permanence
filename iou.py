@@ -3,6 +3,7 @@
 # Should be similar to what yolo outputs, so check how that works
 import numpy as np
 def iou(expected_info, calculated_info):
+    '''
     exp_width = expected_info[0][2]
     exp_height = expected_info[0][3]
     exp_cx = expected_info[0][0]
@@ -12,8 +13,17 @@ def iou(expected_info, calculated_info):
     exp_area = exp_width*exp_height
 
     exp_class = np.array(expected_info[1])
+    '''
+    exp_class = np.array(expected_info[4])
+    exp_width = expected_info[2]
+    exp_height = expected_info[3]
+    exp_cx = expected_info[0]
+    exp_cy = expected_info[1]
+    exp_tl = (exp_cx - exp_width // 2, exp_cy - exp_height // 2)
+    exp_br = (exp_cx + exp_width // 2, exp_cy + exp_height // 2)
+    exp_area = exp_width * exp_height
 
-    calc_class = np.array(calculated_info[5])
+    calc_class = np.array(calculated_info[4])
     calc_width = calculated_info[2]
     calc_height = calculated_info[3]
     calc_cx = calculated_info[0]
@@ -26,10 +36,15 @@ def iou(expected_info, calculated_info):
         same_class = False
     else:
         same_class = True
-    
-    overlap_area = (min(exp_br[0], calc_br[0])-max(exp_tl[0], calc_tl[0]))*(min(exp_br[1], calc_br[1])-max(exp_tl[1], calc_tl[1]))
-    overlap_area = max(overlap_area, 0)
+
+    overlap_area = 0
+    overlap_dim1 = min(exp_br[0], calc_br[0])-max(exp_tl[0], calc_tl[0])
+    overlap_dim2 = min(exp_br[1], calc_br[1])-max(exp_tl[1], calc_tl[1])
+    if overlap_dim1 > 0 and overlap_dim2 > 0:
+        overlap_area = overlap_dim1*overlap_dim2
 
     union_area = exp_area+calc_area-overlap_area
 
     return (overlap_area/union_area, same_class)
+
+#print(iou([250,400,300,400,5], [100,200,300,400,5]))

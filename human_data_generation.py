@@ -72,6 +72,3 @@ for i in range(8,24):
     name = 'HDS'+ist+'.avi'
     video_objects.video_format(video[0], 5, name)
 
-
-
-    
