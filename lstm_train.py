@@ -51,6 +51,7 @@ if __name__ == "__main__":
     # data loading
     full_dataset = FeaturesDataset(cnn_json_file, yolo_json_file, video_file, labels_file,
                                    transform=transforms.Compose([ToTensor()]))
+    '''
     train_size = int(0.8 * dataset_size)
     test_size = dataset_size - train_size
     train_set, test_set = torch.utils.data.random_split(full_dataset, [train_size, test_size])
@@ -59,6 +60,8 @@ if __name__ == "__main__":
                                                shuffle=False, num_workers=2)
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=1,
                                               shuffle=False, num_workers=2)
+    '''
+    train_loader = torch.utils.data.DataLoader(full_dataset, batch_size = 1, shuffle = False, num_workers = 1)
 
     # make the model
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
