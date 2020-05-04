@@ -21,7 +21,7 @@ output_sizes = (3, 4)
 # trying 2 for now; might need more
 hidden_layers = 2
 
-epochs = 2000
+epochs = 1000
 
 # TODO: this is currently a rudimentary implementation; no special handling of detection failure atm
 # both outputs and targets are tuples (class one-hot, bbox, confidence)
@@ -116,8 +116,10 @@ if __name__ == "__main__":
         print('[%d] bbox loss: %.3f' % (epoch + 1, running_bbox_loss / 800))
         running_loss = 0.0
 
-    PATH = 'trained_models/lstm_' + str(epochs) + 'epochs.pt'
-    torch.save(model.state_dict(), PATH)
+        # save the model every 250 epochs
+        if epoch % 250 == 249:
+            PATH = 'trained_models/lstm_' + str(epoch+1) + 'epochs.pt'
+            torch.save(model.state_dict(), PATH)
 
     print('Finished Training')
 
