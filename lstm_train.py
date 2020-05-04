@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
         # save the model every 250 epochs
         if epoch % 250 == 249:
-            PATH = 'trained_models/lstm3_' + str(epoch+1) + 'epochs.pt'
+            PATH = 'trained_models/lstm4_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')
