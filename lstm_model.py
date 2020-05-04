@@ -16,8 +16,8 @@ class VideoLSTM(nn.Module):
         self.fc_bbox = nn.Linear(hidden_size, output_sizes[1])
         self.fc_conf = nn.Linear(hidden_size, output_sizes[2])
 
-        self.hidden_cell = (torch.zeros(1, 1, self.hidden_layer_size),
-                            torch.zeros(1, 1, self.hidden_layer_size))
+        self.hidden_cell = (torch.zeros(1, 1, self.hidden_size),
+                            torch.zeros(1, 1, self.hidden_size))
 
     def forward(self, input_seq):
         # lstm takes input shape (sequence length, batch, input size); batch is 1
