@@ -45,8 +45,13 @@ class FeaturesDataset(Dataset):
         for i in yolo_output:
             imgpath = i['image_id'].replace('\\', '/')
 
-            result = None
+            # if YOLO fails to detect anything, just give us a bunch of zeros
+            result = [0, 0, 0, 0, 0, 0, 0, 0]
+            # check if YOLO actually detects anything
             if i['bbox']:
+                # represent category as one-hot
+                category = [0, 0, 0]
+                category[i['category_id']] = 1
                 result = [i['category_id']] + i['bbox'] + [i['score']]
 
             pretrain_output_dict[imgpath] = result
