@@ -68,7 +68,7 @@ if __name__ == "__main__":
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
     model.to(device)
 
-    optimizer = optim.Adam(model.parameters(), lr=0.5)
+    optimizer = optim.Adam(model.parameters(), lr=0.1)
 
     for epoch in range(epochs):
         running_loss = 0.0
