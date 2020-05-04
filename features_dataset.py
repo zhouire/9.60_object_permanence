@@ -62,12 +62,12 @@ class FeaturesDataset(Dataset):
         # add the CNN json info to the pretraining output dict,
         # value list is now [feature_vec, category_id, bbox, confidence] (flattened)
         for i in cnn_output:
-            imgpath = i['image']
+            imgpath = i['image'][0]
             # features is saved in the json as a list in a list
             features = i['features'][0]
 
             result = features + pretrain_output_dict[imgpath]
-            pretrain_output_dict[imgpath] = tuple(result)
+            pretrain_output_dict[imgpath] = result
 
         video_txt = open(video_file, 'r')
         video_list = video_txt.readlines()
@@ -84,7 +84,7 @@ class FeaturesDataset(Dataset):
             labels = json.loads(labels_list[i][:-1])
 
             # loop through all frames of video, get features from video path
-            video_features = [list(pretrain_output_dict[f]) for f in video]
+            video_features = [pretrain_output_dict[f] for f in video]
 
             self.inputs.append(np.array(video_features))
             self.paths.append(video)
