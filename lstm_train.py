@@ -36,9 +36,9 @@ def custom_loss(output, target):
     # crossentropy loss takes one-hot input but index target
     class_loss = nn.CrossEntropyLoss()(class_output, class_target)
     # try just MSE with bbox, but might need to switch to YOLO method
-    bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
+    bbox_loss = nn.MSELoss()(torch.sqrt(bbox_output), torch.sqrt(bbox_target))
 
-    loss = class_loss + 10*bbox_loss
+    loss = class_loss + 5*bbox_loss
 
     return loss, class_loss, bbox_loss
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
         # save the model every 250 epochs
         if epoch % 250 == 249:
-            PATH = 'trained_models/lstm_' + str(epoch+1) + 'epochs.pt'
+            PATH = 'trained_models/lstm2_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')
