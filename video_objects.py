@@ -388,7 +388,8 @@ for i in video[0]:
 
 '''
 # testing randomized dataset generation
-data = generate_dataset(1000, (0.1, 0.25), (0.15, 0.33), 0.5, 15, percent_occ = True, savepath = "data/videos/")
+#data = generate_dataset(1000, (0.1, 0.25), (0.15, 0.33), 0.5, 15, percent_occ = True, savepath = "data/videos/")
+data = generate_dataset(500, (0.1, 0.25), (0.15, 0.33), 0.5, 15, percent_occ = True, savepath = "data/videos_test/")
 
 '''
 for d in data:
