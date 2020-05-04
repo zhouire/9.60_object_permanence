@@ -30,7 +30,7 @@ def test(net, test_loader, device):
         100 * correct / total))
 
 
-def get_features(net, test_loader, device):
+def get_features(net, test_loader, device, savefile):
     json_output = []
 
     with torch.no_grad():
@@ -45,7 +45,7 @@ def get_features(net, test_loader, device):
             features = outputs.detach().cpu().numpy().tolist()
             json_output.append({"image": paths, "features": features})
 
-    with open('data/cnn_video_results.json', 'w') as outfile:
+    with open(savefile, 'w') as outfile:
         json.dump(json_output, outfile)
 
 
@@ -58,11 +58,11 @@ if __name__ == "__main__":
     cnn.load_state_dict(torch.load("trained_models/cnn_net_10epoch.pt", map_location=device))
     cnn.to(device)
 
-    test_images = "data/videos/allimages.txt"
+    test_images = "data/videos_test/allimages.txt"
     test_set = VideoCNNDataset(test_images, transform=transforms.Compose([ToTensor()]))
     testloader = torch.utils.data.DataLoader(test_set, batch_size=1,
                                                shuffle=False, num_workers=2)
 
-    get_features(cnn, testloader, device)
+    get_features(cnn, testloader, device, 'data/cnn_testvideo_results.json')
 
 #test(cnn, testloader, device)
