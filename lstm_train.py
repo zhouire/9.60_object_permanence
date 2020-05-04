@@ -38,9 +38,9 @@ def custom_loss(output, target):
     # try just MSE with bbox, but might need to switch to YOLO method
     bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
 
-    loss = class_loss + 5*bbox_loss
+    loss = class_loss + 10*bbox_loss
 
-    return loss
+    return loss, class_loss, bbox_loss
 
 
 if __name__ == "__main__":
@@ -68,6 +68,8 @@ if __name__ == "__main__":
 
     for epoch in range(epochs):
         running_loss = 0.0
+        running_class_loss = 0.0
+        running_bbox_loss = 0.0
 
         for i, data in enumerate(train_loader, 0):
             # get the inputs and targets; paths not needed for training
@@ -93,11 +95,13 @@ if __name__ == "__main__":
             else:
                 outputs = [i.type("torch.cuda.FloatTensor") for i in outputs]
 
-            loss = custom_loss(outputs, targets)
+            loss, class_loss, bbox_loss = custom_loss(outputs, targets)
             loss.backward()
             optimizer.step()
 
             running_loss += loss.item()
+            running_class_loss += class_loss.item()
+            running_bbox_loss += bbox_loss.item()
 
             '''
             # print statistics
@@ -108,6 +112,8 @@ if __name__ == "__main__":
             '''
         # print loss every epoch
         print('[%d] loss: %.3f' % (epoch + 1, running_loss / 800))
+        print('[%d] class loss: %.3f' % (epoch + 1, running_class_loss / 800))
+        print('[%d] bbox loss: %.3f' % (epoch + 1, running_bbox_loss / 800))
         running_loss = 0.0
 
     PATH = 'trained_models/lstm_' + str(epochs) + 'epochs.pt'
