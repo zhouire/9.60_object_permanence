@@ -67,7 +67,7 @@ class FeaturesDataset(Dataset):
             features = i['features'][0]
 
             result = features + pretrain_output_dict[imgpath]
-            pretrain_output_dict[imgpath] = result
+            pretrain_output_dict[imgpath] = tuple(result)
 
         video_txt = open(video_file, 'r')
         video_list = video_txt.readlines()
@@ -84,7 +84,7 @@ class FeaturesDataset(Dataset):
             labels = json.loads(labels_list[i][:-1])
 
             # loop through all frames of video, get features from video path
-            video_features = [pretrain_output_dict[f] for f in video]
+            video_features = [list(pretrain_output_dict[f]) for f in video]
 
             self.inputs.append(np.array(video_features))
             self.paths.append(video)
