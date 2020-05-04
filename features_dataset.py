@@ -114,7 +114,7 @@ class FeaturesDataset(Dataset):
 
         # reshape to (seq_len, batch, features)
         inputs = np.swapaxes(inputs, 0, 1)
-        targets = np.awapaxes(targets, 0, 1)
+        targets = np.swapaxes(targets, 0, 1)
 
         sample = {'inputs': inputs, 'paths': paths, 'targets': targets}
 
