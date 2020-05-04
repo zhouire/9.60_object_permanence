@@ -16,7 +16,7 @@ input_size = 72
 # trying 100 for now, decrease if overfitting and increase if underfitting
 hidden_size = 100
 # 3 for one-hot classification, 4 for bounding box, 1 for confidence
-output_size = 8
+output_sizes = (3, 4, 1)
 # trying 2 for now; might need more
 hidden_layers = 2
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(device)
 
-    model = VideoLSTM(input_size, hidden_size, hidden_layers, output_size)
+    model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
     model.to(device)
 
     optimizer = optim.SGD(model.parameters(), lr=0.1)
