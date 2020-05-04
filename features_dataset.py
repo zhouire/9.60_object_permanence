@@ -92,7 +92,6 @@ class FeaturesDataset(Dataset):
 
         # convert input/target to numpy arrays
         self.inputs = np.array(self.inputs)
-        self.paths = np.array(self.paths)
         self.targets = np.array(self.targets)
 
 
@@ -109,15 +108,17 @@ class FeaturesDataset(Dataset):
         paths = self.paths[idx]
         targets = self.targets[idx]
 
+        '''
         # make sure they have 3 dimensions:
         if len(inputs.shape) == 2:
-            inputs = np.array([inputs]).shape
+            inputs = np.array([inputs])
         if len(targets.shape) == 2:
-            targets = np.array([targets]).shape
+            targets = np.array([targets])
 
         # reshape to (seq_len, batch, features)
         inputs = np.swapaxes(inputs, 0, 1)
         targets = np.swapaxes(targets, 0, 1)
+        '''
 
         sample = {'inputs': inputs, 'paths': paths, 'targets': targets}
 
