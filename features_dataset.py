@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 from PIL import Image
 
+image_size = 320
 
 # this dataset consists of the features that come out of CNN and YOLO, with output labels [one-hot values, x, y, w, h]
 # shape: (seq_len, batch, input_size)
@@ -52,7 +53,9 @@ class FeaturesDataset(Dataset):
                 # represent category as one-hot
                 category = [0, 0, 0]
                 category[i['category_id']] = 1
-                result = [i['category_id']] + i['bbox'] + [i['score']]
+                # put bbox coord in range [0,1] (they are pixel values in yolo output)
+                bbox = [c/320 for c in i['bbox']]
+                result = category + bbox + [i['score']]
 
             pretrain_output_dict[imgpath] = result
 
