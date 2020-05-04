@@ -114,9 +114,9 @@ if __name__ == "__main__":
                 running_loss = 0.0
             '''
         # print loss every epoch
-        print('[%d] loss: %.3f' % (epoch + 1, running_loss / 800))
-        print('[%d] class loss: %.3f' % (epoch + 1, running_class_loss / 800))
-        print('[%d] bbox loss: %.3f' % (epoch + 1, running_bbox_loss / 800))
+        print('[%d] loss: %.3f' % (epoch + 1, running_loss / 1000))
+        print('[%d] class loss: %.3f' % (epoch + 1, running_class_loss / 1000))
+        print('[%d] bbox loss: %.3f' % (epoch + 1, running_bbox_loss / 1000))
         running_loss = 0.0
 
         # save the model every 250 epochs
