@@ -11,8 +11,8 @@ video_file = "data/videos/images.txt"
 labels_file = "data/videos/labels.txt"
 dataset_size = 1000
 
-# 64 features from CNN, 6 from YOLO
-input_size = 70
+# 64 features from CNN, 8 from YOLO
+input_size = 72
 # trying 100 for now, decrease if overfitting and increase if underfitting
 hidden_size = 100
 # 3 for one-hot classification, 4 for bounding box, 1 for confidence
@@ -39,7 +39,9 @@ def custom_loss(output, target):
     class_output, bbox_output, conf_output = output
     class_target, bbox_target, conf_target = target
 
-    class_loss = nn.BCEWithLogitsLoss()(class_output, class_target)
+    #class_loss = nn.BCEWithLogitsLoss()(class_output, class_target)
+    # crossentropy loss takes one-hot input but index target
+    class_loss = nn.CrossEntropyLoss()(class_output, class_target)
     # try just MSE with bbox, but might need to switch to YOLO method
     bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
     conf_loss = nn.MSELoss()(conf_output, conf_target)
@@ -66,7 +68,7 @@ if __name__ == "__main__":
             # get the inputs and targets; paths not needed for training
             inputs, targets = data['inputs'], data['targets']
             # reorganize targets to be compatible with outputs
-            targets = [targets[:, :, :3], targets[:, :, 3:7], targets[:, :, 7:]]
+            targets = [targets[:, :, :1], targets[:, :, 1:5], targets[:, :, 5:]]
 
             # change ByteTensor (default) to FloatTensor
             inputs = inputs.type('torch.FloatTensor').to(device)
