@@ -68,4 +68,4 @@ def iou(expected_info, calculated_info, pixel = True, has_class = True, class_fi
     else:
         return overlap_area/union_area
 
-print(iou([100, 200, 350,450,5], [100,200,300,400,5]))
+#print(iou([100, 200, 350,450,5], [100,200,300,400,5]))
