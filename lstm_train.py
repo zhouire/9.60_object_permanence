@@ -39,9 +39,9 @@ def custom_loss(output, target):
     #bbox_loss = nn.MSELoss()(torch.sqrt(bbox_output), torch.sqrt(bbox_target))
     bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
 
-    loss = class_loss + 10*bbox_loss
+    loss = class_loss + 5*bbox_loss
 
-    return loss, class_loss, bbox_loss*10
+    return loss, class_loss, bbox_loss*5
 
 
 if __name__ == "__main__":
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
     model.to(device)
 
-    optimizer = optim.SGD(model.parameters(), lr=0.001)
+    optimizer = optim.SGD(model.parameters(), lr=0.01)
 
     for epoch in range(epochs):
         running_loss = 0.0
