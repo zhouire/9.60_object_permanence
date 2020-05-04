@@ -64,7 +64,8 @@ if __name__ == "__main__":
     for epoch in range(epochs):
         running_loss = 0.0
 
-        for i, data in enumerate(train_loader, 0):
+        #for i, data in enumerate(train_loader, 0):
+        for data in train_loader:
             # get the inputs and targets; paths not needed for training
             inputs, targets = data['inputs'], data['targets']
             # reorganize targets to be compatible with outputs
