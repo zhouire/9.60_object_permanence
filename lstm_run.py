@@ -1,7 +1,19 @@
 # this code tests + runs the lstm on the test video dataset
-# first implementation: 87% classification acc, 26% average iou
+# first implementation: 87% classification acc, 26% average iou (250 - 1000 epochs all same)
+# second implementation: (MSE of sqrt values in bbox, bbox multiplier decreased to 5) 87% class, 18% iou (250 epochs)
+# 3: (no more sqrt, multiplier 50) fantastically poor training
+# 4: (multiplier 20, Adam optimizer (instead of SGD) 0.5 lr (instead of 0.1)) training not budging immediately, even worse
+# 5: (multiplier 20, Adam optimizer w/ 0.1 lr) same problem
+# 6: (multiplier 20, SGD w/ 0.2 lr) classification working better, but regression wont budge
+# 7: (multiplier 10, SGD w/ 0.05 lr) classification 87, bbox 31, (500, 750, 1000 epochs)
+# 8: (sgd 0.01 lr) classification 86, bbox 35 (250-1000 epochs)
+# 9: (sgd, 0.001 lr) classification 87, bbox 35 (250-1000 epochs)
+# 10: (sgd, 0.01 lr, 5x) classification 87, bbox 32 (250-1000 epochs)
+# 11: (no relu, Adam optim w/ 0.01 lr) classification 87, bbox 36 (250 epochs)
+# 12: (no relu, Adam optim w/0.001 lr) classification 87, bbox 39
+# 13: (no relu, Adam optim w/ 0.003 lr) classification 87, bbox 43 (looks like 1000 epochs was not enough to complete train)
+# 14: (RMSE instead of MSE) classification 86, bbox 45
 
-# second implementation: (MSE of sqrt values in bbox)
 
 
 import torch.optim as optim
@@ -52,15 +64,14 @@ def test(model, test_loader, device, savefile):
                                 "class_pred": class_pred,
                                 "bbox_pred": bbox_output,
                                 "class_target": class_target.tolist(),
-                                "bbbox_target": bbox_target})
+                                "bbox_target": bbox_target,
+                                "iou": ious})
 
     with open(savefile, 'w') as outfile:
         json.dump(json_output, outfile)
 
-    print('Classification test accuracy of the network: %d %%' % (
-        100 * class_correct / total))
-    print('Bbox test avg iou of the network: %d %%' % (
-            100 * bbox_iou / total))
+    print('Classification test accuracy of the network: ' + str(100 * class_correct / total))
+    print('Bbox test avg iou of the network: ' + str(100 * bbox_iou / total))
 
 '''
 def get_features(net, test_loader, device, savefile):
@@ -98,7 +109,7 @@ if __name__ == "__main__":
     print(device)
 
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
-    model.load_state_dict(torch.load("trained_models/lstm_1000epochs.pt", map_location=device))
+    model.load_state_dict(torch.load("trained_models/lstm_norelu_RMSE_1000epochs.pt", map_location=device))
     model.to(device)
 
     cnn_json = "data/cnn_testvideo_results.json"

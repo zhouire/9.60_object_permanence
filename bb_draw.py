@@ -8,6 +8,6 @@ def bb_draw(image, bb_info):
     return image
 
 
-# image = Image.open(r"data\pretrain\images\pretrainimg_0.jpg")  
-# p = bb_draw(image,(100,100, 20, 20))
-# p.show()
+#image = Image.open(r"data\pretrain\images\pretrainimg_0.jpg")
+#p = bb_draw(image,(100,100, 20, 20))
+#p.show()
