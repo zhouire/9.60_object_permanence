@@ -69,7 +69,7 @@ if __name__ == "__main__":
     model.to(device)
 
     #optimizer = optim.SGD(model.parameters(), lr=0.01)
-    optimizer = optim.SGD(model.parameters(), lr=0.01)
+    optimizer = optim.SGD(model.parameters(), lr=0.001)
 
     for epoch in range(epochs):
         running_loss = 0.0
