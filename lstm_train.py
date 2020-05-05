@@ -39,9 +39,9 @@ def custom_loss(output, target):
     #bbox_loss = nn.MSELoss()(torch.sqrt(bbox_output), torch.sqrt(bbox_target))
     bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
 
-    loss = class_loss + 5*bbox_loss
+    loss = class_loss + 10*bbox_loss
 
-    return loss, class_loss, bbox_loss*5
+    return loss, class_loss, bbox_loss*10
 
 
 if __name__ == "__main__":
@@ -68,6 +68,7 @@ if __name__ == "__main__":
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
     model.to(device)
 
+    #optimizer = optim.SGD(model.parameters(), lr=0.01)
     optimizer = optim.SGD(model.parameters(), lr=0.01)
 
     for epoch in range(epochs):
@@ -122,7 +123,7 @@ if __name__ == "__main__":
 
         # save the model every 250 epochs
         if epoch % 250 == 249:
-            PATH = 'trained_models/lstm5_' + str(epoch+1) + 'epochs.pt'
+            PATH = 'trained_models/lstm_norelu_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')

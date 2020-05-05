@@ -26,8 +26,10 @@ class VideoLSTM(nn.Module):
         # reshape to be batches and flatten everything else
         #output = output.view((input_seq.size(1), -1))
 
-        class_pred = F.relu(self.fc_class(output))
-        bbox_pred = F.relu(self.fc_bbox(output))
+        #class_pred = F.relu(self.fc_class(output))
+        #bbox_pred = F.relu(self.fc_bbox(output))
+        class_pred = self.fc_class(output)
+        bbox_pred = self.fc_bbox(output)
 
         # batch size MUST be 1! IDK how to deal with bigger batches.
         class_pred = class_pred.squeeze(1)
