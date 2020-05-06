@@ -21,7 +21,7 @@ output_sizes = (3, 4)
 # trying 2 for now; might need more
 hidden_layers = 2
 
-epochs = 1000
+epochs = 10000
 
 # TODO: this is currently a rudimentary implementation; no special handling of detection failure atm
 # both outputs and targets are tuples (class one-hot, bbox, confidence)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     model.to(device)
 
     #optimizer = optim.SGD(model.parameters(), lr=0.01)
-    optimizer = optim.SGD(model.parameters(), lr=0.003)
+    optimizer = optim.Adam(model.parameters(), lr=0.002)
 
     for epoch in range(epochs):
         running_loss = 0.0
@@ -123,8 +123,8 @@ if __name__ == "__main__":
         running_loss = 0.0
 
         # save the model every 250 epochs
-        if epoch % 250 == 249:
-            PATH = 'trained_models/lstm_norelu_RMSE_' + str(epoch+1) + 'epochs.pt'
+        if epoch % 1000 == 999:
+            PATH = 'trained_models/lstm_longrun_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')
