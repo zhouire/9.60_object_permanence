@@ -21,7 +21,7 @@ output_sizes = (3, 4)
 # trying 2 for now; might need more
 hidden_layers = 2
 
-epochs = 10000
+epochs = 5000
 
 # TODO: this is currently a rudimentary implementation; no special handling of detection failure atm
 # both outputs and targets are tuples (class one-hot, bbox, confidence)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     model.to(device)
 
     #optimizer = optim.SGD(model.parameters(), lr=0.01)
-    optimizer = optim.Adam(model.parameters(), lr=0.002)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     for epoch in range(epochs):
         running_loss = 0.0
