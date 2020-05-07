@@ -19,9 +19,9 @@ hidden_size = 100
 # 3 for one-hot classification, 4 for bounding box
 output_sizes = (3, 4)
 # trying 2 for now; might need more
-hidden_layers = 2
+hidden_layers = 4
 
-epochs = 5000
+epochs = 2000
 
 # TODO: this is currently a rudimentary implementation; no special handling of detection failure atm
 # both outputs and targets are tuples (class one-hot, bbox, confidence)
@@ -40,9 +40,9 @@ def custom_loss(output, target):
     #bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
     bbox_loss = torch.sqrt(nn.MSELoss()(bbox_output, bbox_target))
 
-    loss = class_loss + 10*bbox_loss
+    loss = class_loss + 5*bbox_loss
 
-    return loss, class_loss, bbox_loss*10
+    return loss, class_loss, bbox_loss*5
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@
 # 12: (no relu, Adam optim w/0.001 lr) classification 87, bbox 39
 # 13: (no relu, Adam optim w/ 0.003 lr) classification 87, bbox 43 (looks like 1000 epochs was not enough to complete train)
 # 14: (RMSE instead of MSE) classification 86, bbox 45
+# 15: (longrun, Adam 0.001) classification 87, bbox 48 (running for more than 1000 epochs is unhelpful/slightly detrimental)
 
 
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     print(device)
 
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
-    model.load_state_dict(torch.load("trained_models/lstm_norelu_RMSE_1000epochs.pt", map_location=device))
+    model.load_state_dict(torch.load("trained_models/lstm_longrun_1000epochs.pt", map_location=device))
     model.to(device)
 
     cnn_json = "data/cnn_testvideo_results.json"
