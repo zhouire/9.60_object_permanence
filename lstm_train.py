@@ -16,7 +16,7 @@ dataset_size = 1000
 input_size = 72
 # trying 100 for now, decrease if overfitting and increase if underfitting
 #hidden_size = 100
-hidden_size = 512
+hidden_size = 1024
 # 3 for one-hot classification, 4 for bounding box
 output_sizes = (3, 4)
 # trying 2 for now; might need more
