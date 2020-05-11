@@ -15,7 +15,8 @@ dataset_size = 1000
 # 64 features from CNN, 8 from YOLO
 input_size = 72
 # trying 100 for now, decrease if overfitting and increase if underfitting
-hidden_size = 100
+#hidden_size = 100
+hidden_size = 512
 # 3 for one-hot classification, 4 for bounding box
 output_sizes = (3, 4)
 # trying 2 for now; might need more
@@ -36,9 +37,10 @@ def custom_loss(output, target):
     # crossentropy loss takes one-hot input but index target
     class_loss = nn.CrossEntropyLoss()(class_output, class_target)
     # try just MSE with bbox, but might need to switch to YOLO method
-    #bbox_loss = nn.MSELoss()(torch.sqrt(bbox_output), torch.sqrt(bbox_target))
-    #bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
-    bbox_loss = nn.MSELoss()(bbox_output[:2], bbox_target[:2]) + torch.sqrt(nn.MSELoss()(bbox_output[2:], bbox_target[2:]))
+    bbox_loss = torch.sqrt(nn.MSELoss()(bbox_output, bbox_target))
+    #bbox_loss = nn.MSELoss()(bbox_output[:2], bbox_target[:2]) + torch.sqrt(nn.MSELoss()(bbox_output[2:], bbox_target[2:]))
+
+    #bbox_loss = nn.MSELoss()(bbox_output[:2], bbox_target[:2]) + nn.MSELoss()(torch.sqrt(bbox_output[2:]), torch.sqrt(bbox_target[2:]))
 
     loss = class_loss + 5*bbox_loss
 
@@ -124,7 +126,7 @@ if __name__ == "__main__":
 
         # save the model every 250 epochs
         if epoch % 250 == 249:
-            PATH = 'trained_models/lstm_funloss_' + str(epoch+1) + 'epochs.pt'
+            PATH = 'trained_models/lstm_512hid_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')

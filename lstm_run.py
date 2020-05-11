@@ -15,6 +15,10 @@
 # 14: (RMSE instead of MSE) classification 86, bbox 45
 # 15: (longrun, Adam 0.001) classification 87, bbox 48 (running for more than 1000 epochs is unhelpful/slightly detrimental)
 
+# 16: (MSE on center and RMSE on w and h)
+
+# 17: (MSE on center and MSE on sqrt(w) and sqrt(h))
+
 
 
 import torch.optim as optim
