@@ -21,7 +21,7 @@ output_sizes = (3, 4)
 # trying 2 for now; might need more
 hidden_layers = 2
 
-epochs = 2000
+epochs = 1000
 
 # TODO: this is currently a rudimentary implementation; no special handling of detection failure atm
 # both outputs and targets are tuples (class one-hot, bbox, confidence)
