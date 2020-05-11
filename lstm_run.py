@@ -110,7 +110,7 @@ if __name__ == "__main__":
     print(device)
 
     model = VideoLSTM(input_size, hidden_size, hidden_layers, output_sizes)
-    model.load_state_dict(torch.load("trained_models/lstm_longrun_1000epochs.pt", map_location=device))
+    model.load_state_dict(torch.load("trained_models/lstm_longrun_2000epochs.pt", map_location=device))
     model.to(device)
 
     cnn_json = "data/cnn_testvideo_results.json"

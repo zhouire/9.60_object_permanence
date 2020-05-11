@@ -19,7 +19,7 @@ hidden_size = 100
 # 3 for one-hot classification, 4 for bounding box
 output_sizes = (3, 4)
 # trying 2 for now; might need more
-hidden_layers = 4
+hidden_layers = 2
 
 epochs = 2000
 
@@ -38,7 +38,7 @@ def custom_loss(output, target):
     # try just MSE with bbox, but might need to switch to YOLO method
     #bbox_loss = nn.MSELoss()(torch.sqrt(bbox_output), torch.sqrt(bbox_target))
     #bbox_loss = nn.MSELoss()(bbox_output, bbox_target)
-    bbox_loss = torch.sqrt(nn.MSELoss()(bbox_output, bbox_target))
+    bbox_loss = nn.MSELoss()(bbox_output[:2], bbox_target[:2]) + torch.sqrt(nn.MSELoss()(bbox_output[2:], bbox_target[2:]))
 
     loss = class_loss + 5*bbox_loss
 
@@ -123,8 +123,8 @@ if __name__ == "__main__":
         running_loss = 0.0
 
         # save the model every 250 epochs
-        if epoch % 1000 == 999:
-            PATH = 'trained_models/lstm_longrun_' + str(epoch+1) + 'epochs.pt'
+        if epoch % 250 == 249:
+            PATH = 'trained_models/lstm_funloss_' + str(epoch+1) + 'epochs.pt'
             torch.save(model.state_dict(), PATH)
 
     print('Finished Training')

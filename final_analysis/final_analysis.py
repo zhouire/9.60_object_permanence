@@ -102,7 +102,8 @@ print('standard bin labelsmatch ' + str(standard_avg_labelmatch))
 
 # show video with bounding box on each frame
 # choose a video
-video_show = lstm_output[4]
+#video_show = lstm_output[4]
+video_show = lstm_output[0]
 for i in range(len(video_show["video"])):
     imgpath = "../" + video_show["video"][i][0]
     img = Image.open(imgpath)
